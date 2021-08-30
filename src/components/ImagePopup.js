@@ -1,8 +1,8 @@
 import React from 'react';
 
 function ImagePopup(props) {
-  const popupVisibleClass = props.card ? 'popup_visible' : '';
-  const link = props.card ? props.card.link : '';
+  const popupVisibleClass = props.card.name ? 'popup_visible' : '';
+  const link = props.card.link ? props.card.link : '';
 
   return (
     <div className={`popup popup_content_view-photo popup_opacity_low ${popupVisibleClass}`}>
