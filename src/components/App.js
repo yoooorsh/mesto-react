@@ -3,7 +3,7 @@ import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import ImagePopup from './ImagePopup';
-import PopupWithForm from './PopupWithForm';
+import DeleteConfirmationPopup from './DeleteConfirmationPopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
@@ -17,6 +17,8 @@ function App() {
   const [isDeleteConfirmationPopupOpen, setIsDeleteConfirmationPopupOpen] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState({name: '', link: ''});
+
+  const [deletedCard, setDeletedCard] = useState({name: '', link: ''});
 
   const [currentUser, setCurrentUser] = useState({});
 
@@ -45,7 +47,8 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
-  function handleDeleteConfirmationClick() {
+  function handleDeleteConfirmationClick(card) {
+    setDeletedCard(card);
     setIsDeleteConfirmationPopupOpen(true);
   }
 
@@ -55,6 +58,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsDeleteConfirmationPopupOpen(false);
     setSelectedCard({name: '', link: ''});
+    setDeletedCard({name: '', link: ''});
   }
 
   function handleCardClick(card) {
@@ -77,6 +81,7 @@ function App() {
     api.deleteCard(card._id)
       .then(() => {
         setCards((cards) => cards.filter((c) => c._id !== card._id));
+        closeAllPopups();
       })
       .catch(err => {
         console.log(`Api error: ${err}`);
@@ -126,7 +131,7 @@ function App() {
         cards={cards}
         onCardClick={handleCardClick}
         onCardLike={handleCardLike}
-        onCardDelete={handleCardDelete}
+        onCardDelete={handleDeleteConfirmationClick}
       />
       <Footer />
 
@@ -147,12 +152,11 @@ function App() {
         onClose={closeAllPopups}
       />
 
-      <PopupWithForm
-        name="delete-confirmation"
-        title="Вы уверены?"
-        buttonText="Да"
+      <DeleteConfirmationPopup
+        card={deletedCard}
         isOpen={isDeleteConfirmationPopupOpen}
         onClose={closeAllPopups}
+        onCardDelete={handleCardDelete}
       />
       
       <EditAvatarPopup
